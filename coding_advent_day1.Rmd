@@ -1,0 +1,47 @@
+---
+title: "Coding Advent Day 1"
+author: "Theresa Alexander"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r}
+#read in the text file while preserving the line return white spaces
+elves <- readLines("../elf_calories.txt")
+
+#how many elves are there?
+num_elves <- length(elves[elves == ""])+1
+
+#to create a named list st each elf's food cals are in their respective index
+split_elves <- vector("list", num_elves)
+names(split_elves) <- paste0("elf_", 1:num_elves)
+
+#to keep track of total cals for each elf
+total_cals_elves <- c()
+
+#keep track of what elf we are separating for the following loop
+index_of_switch <- c(1, which(elves == ""))
+elf_indx = 1
+
+for (i in seq_along(index_of_switch[-250])) {
+    elf_cals <- as.numeric(elves[index_of_switch[i]:index_of_switch[i+1]])
+    split_elves[[elf_indx]] <- elf_cals[!is.na(elf_cals)]
+    total_cals_elves[elf_indx] <- sum(split_elves[[elf_indx]] )
+    elf_indx = elf_indx + 1
+}
+
+# Answers
+#number of calories carried by the elf with the max cals
+message("The elf with the maximum number of calories is carrying ", max(total_cals_elves), " cals. \n These are the entries for the elf with the max calories: \n")
+
+#which elf is it?
+split_elves[which.max(total_cals_elves)]
+```
+
+```{r}
+#part 2
+#total Calories carried by the top three Elves carrying the most Calories
+sum(rev(total_cals_elves[order(total_cals_elves)])[1:3])
+```
+
+
